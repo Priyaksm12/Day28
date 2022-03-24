@@ -6,18 +6,14 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import com.google.gson.Gson;
 import com.opencsv.exceptions.CsvValidationException;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AddressBook {
@@ -226,5 +222,34 @@ public class AddressBook {
             }
         }
     }
-}
 
+    public static void writeDataInJSon() throws IOException {
+        {
+            Path filePath = Paths.get("data.json");
+            Gson gson = new Gson();
+            String json = gson.toJson(persons);
+            FileWriter writer = new FileWriter(String.valueOf(filePath));
+            writer.write(json);
+            writer.close();
+        }
+    }
+
+    public static void readDataFromJson() throws IOException {
+        ArrayList<ContactPerson> contactList = null;
+        Path filePath = Paths.get("data.json");
+        try (Reader reader = Files.newBufferedReader(filePath);) {
+            Gson gson = new Gson();
+            contactList = new ArrayList<ContactPerson>(Arrays.asList(gson.fromJson(reader, ContactPerson[].class)));
+            for (ContactPerson contact : contactList) {
+                System.out.println("Firstname : " + contact.getFirstName());
+                System.out.println("Lastname : " + contact.getLastName());
+                System.out.println("Address : " + contact.getAddress());
+                System.out.println("City : " + contact.getCity());
+                System.out.println("State : " + contact.getState());
+                System.out.println("Zip : " + contact.getZipCode());
+                System.out.println("Phone number : " + contact.getPhoneNumber());
+            }
+
+        }
+    }
+}
