@@ -4,15 +4,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddressBookDBService {
+public class AddressBookDBService
+{
     public Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
+    private PreparedStatement addressBookDataStatement;
     private static AddressBookDBService addressBookDBService;
-
-    public AddressBookDBService() {
+    public AddressBookDBService()
+    {
     }
-
     public static AddressBookDBService getInstance() {
         if (addressBookDBService == null) {
             addressBookDBService = new AddressBookDBService();
@@ -30,7 +31,7 @@ public class AddressBookDBService {
     }
 
     public List<AddressBookData> readDate() {
-        String query = "SELECT * from addressbook";
+        String query = "SELECT * from addressBook";
         return this.getAddressBookDataUsingDB(query);
     }
 
@@ -58,7 +59,6 @@ public class AddressBookDBService {
                 String city = resultSet.getString("city");
                 String state = resultSet.getString("state");
                 String zip = resultSet.getString("zip");
-                String address = resultSet.getString("address");
                 addressBookList.add(new AddressBookData(typeId, firstName, lastName, phoneNumber, email, city, state, zip));
             }
         } catch (SQLException e) {
@@ -66,5 +66,37 @@ public class AddressBookDBService {
         }
         return addressBookList;
     }
+    private void prepareStatementForAddressBook() {
+        try {
+            Connection connection = this.getConnection();
+            String sql = "SELECT * FROM addressBook WHERE `firstName` = ?";
+            addressBookDataStatement = connection.prepareStatement(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public List<AddressBookData> getAddressBookData(String firstName) {
+        List<AddressBookData> addressBookDataList = null;
+        if (this.addressBookDataStatement == null) {
+            this.prepareStatementForAddressBook();
+        }
+        try {
+            addressBookDataStatement.setString(1, firstName);
+            ResultSet resultSet = addressBookDataStatement.executeQuery();
+            addressBookDataList =this.getAddressBookData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return addressBookDataList;
+    }
 
+    public int updateAddressBookRecord(String name, String phoneNumber) throws AddressBookException {
+        String query = String.format("update addressBook set phoneNumber = '%s' where firstName= '%s' ;", phoneNumber, name);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(query);
+        }catch (SQLException e) {
+            throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DatabaseException);
+        }
+    }
 }
