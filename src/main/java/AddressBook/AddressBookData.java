@@ -40,6 +40,7 @@ public class AddressBookData {
     }
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (!(o instanceof AddressBookData)) return false;
         AddressBookData that = (AddressBookData) o;

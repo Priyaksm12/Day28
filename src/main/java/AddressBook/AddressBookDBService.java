@@ -86,6 +86,7 @@ public class AddressBookDBService
             addressBookDataList =this.getAddressBookData(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
+
         }
         return addressBookDataList;
     }

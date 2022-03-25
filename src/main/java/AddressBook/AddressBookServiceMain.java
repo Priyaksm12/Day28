@@ -36,6 +36,7 @@ public class AddressBookServiceMain {
     public boolean checkRecordSyncWithDB(String name) {
         List<AddressBookData> addressBookData= addressBookDBService.getAddressBookData(name);
         System.out.println(addressBookData);
+
         return addressBookData.get(0).equals(getAddressBookData(name));
     }
 

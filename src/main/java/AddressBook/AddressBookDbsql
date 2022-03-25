@@ -54,6 +54,7 @@ mysql> describe  addressbook;
 +-------------+-------------+------+-----+---------+----------------+
 9 rows in set  (0.01 sec)
 
+
 mysql> inser into addressbook (firstname,lastname,address,city,state,zip,phonenumber,email) values ('PRIYANKA','KS','DVG KARNATAKA','DAVANGERE','KARANATAKA','577004','9009009009','priya@gmail.com')
     -> ;
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'inser into addressbook (firstname,lastname,address,city,state,zip,phonenumber,em' at line 1
