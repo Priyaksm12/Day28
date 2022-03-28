@@ -2,10 +2,10 @@ package AddressBook;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBookServiceMain {
     private List<AddressBookData> addressBookList;
-
     public enum IOService {DB_IO}
     private static AddressBookDBService addressBookDBService;
 
@@ -37,7 +37,8 @@ public class AddressBookServiceMain {
     public boolean checkRecordSyncWithDB(String name) {
         List<AddressBookData> addressBookData= addressBookDBService.getAddressBookData(name);
         System.out.println(addressBookData);
-        return addressBookData.get(0).equals(getAddressBookData(name));
+        boolean equals = addressBookData.get(0).equals(getAddressBookData(name));
+        return equals;
     }
 
     public List<AddressBookData> readEmployeePayrollForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
@@ -47,4 +48,16 @@ public class AddressBookServiceMain {
         return null;
     }
 
+    public Map<String, Double> contactsByCity(IOService ioService) {
+        if (ioService.equals(IOService.DB_IO)) {
+            return addressBookDBService.getCountOfContactsByCity();
+        }
+        return null;
+    }
+    public Map<String, Double> contactsByState(IOService ioService) {
+        if (ioService.equals(IOService.DB_IO)) {
+            return addressBookDBService.getCountOfContactsByState();
+        }
+        return null;
+    }
 }
