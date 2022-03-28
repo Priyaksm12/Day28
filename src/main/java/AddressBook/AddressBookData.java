@@ -1,5 +1,6 @@
 package AddressBook;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class AddressBookData {
@@ -11,8 +12,10 @@ public class AddressBookData {
     public String city;
     public String state;
     public String zip;
+    private LocalDate date_added;
 
-    public AddressBookData( String typeId, String firstName, String lastName, String phoneNumber, String email, String city, String state, String zip) {
+
+    public AddressBookData(String typeId, String firstName, String lastName, String phoneNumber, String email, String city, String state, String zip, LocalDate localDate) {
         this.typeId = typeId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -21,27 +24,15 @@ public class AddressBookData {
         this.city = city;
         this.state = state;
         this.zip = zip;
+        this.date_added = date_added;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AddressBookData)) return false;
-        AddressBookData that = (AddressBookData) o;
-        return  Objects.equals(typeId,that.typeId )&&
-                firstName.equals(that.firstName) &&
-                lastName.equals(that.lastName) &&
-                Objects.equals(phoneNumber, that.phoneNumber) &&
-                Objects.equals(email, that.email) &&
-                Objects.equals(city, that.city) &&
-                Objects.equals(state, that.state) &&
-                Objects.equals(zip, that.zip);
-    }
+
 
     @Override
     public String toString() {
         return "AddressBookData{" +
-                "typeId=" + typeId +
+                ", typeId=" + typeId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
@@ -50,5 +41,19 @@ public class AddressBookData {
                 ", state='" + state + '\'' +
                 ", zip='" + zip + '\'' +
                 '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AddressBookData)) return false;
+        AddressBookData that = (AddressBookData) o;
+        return Objects.equals(typeId, that.typeId) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(phoneNumber, that.phoneNumber) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(city, that.city) &&
+                Objects.equals(state, that.state) &&
+                Objects.equals(zip, that.zip);
     }
 }

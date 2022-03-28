@@ -7,16 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddressBookDBService {
+public class AddressBookDBService
+{
     public Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
     private PreparedStatement addressBookDataStatement;
     private static AddressBookDBService addressBookDBService;
-
-    public AddressBookDBService() {
+    public AddressBookDBService()
+    {
     }
-
     public static AddressBookDBService getInstance() {
         if (addressBookDBService == null) {
             addressBookDBService = new AddressBookDBService();
@@ -34,7 +34,7 @@ public class AddressBookDBService {
     }
 
     public List<AddressBookData> readDate() {
-        String query = "SELECT * from addressbook";
+        String query = "SELECT * from addressBook";
         return this.getAddressBookDataUsingDB(query);
     }
 
@@ -62,18 +62,18 @@ public class AddressBookDBService {
                 String city = resultSet.getString("city");
                 String state = resultSet.getString("state");
                 String zip = resultSet.getString("zip");
-                addressBookList.add(new AddressBookData(typeId, firstName, lastName, phoneNumber, email, city, state, zip));
+                LocalDate date_added = resultSet.getDate("date_added").toLocalDate();
+                addressBookList.add(new AddressBookData(typeId, firstName, lastName, phoneNumber, email, city, state, zip, date_added));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return addressBookList;
     }
-
     private void prepareStatementForAddressBook() {
         try {
             Connection connection = this.getConnection();
-            String sql = "SELECT * FROM addressbook WHERE `firstName` = ?";
+            String sql = "SELECT * FROM addressBook WHERE `firstName` = ?";
             addressBookDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,7 +95,7 @@ public class AddressBookDBService {
     }
 
     public int updateAddressBookRecord(String name, String phoneNumber) throws AddressBookException {
-        String query = String.format("update addressbook set phoneNumber = '%s' where firstName= '%s' ;", phoneNumber, name);
+        String query = String.format("update addressBook set phoneNumber = '%s' where firstName= '%s' ;", phoneNumber, name);
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(query);
@@ -103,15 +103,13 @@ public class AddressBookDBService {
             throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DatabaseException);
         }
     }
-
     public List<AddressBookData> getEmployeePayrollForDateRange(LocalDate startDate, LocalDate endDate) {
-        String query = String.format("SELECT * FROM addressbook WHERE date_added BETWEEN '%s' AND '%s';",
+        String query = String.format("SELECT * FROM addressBook WHERE date_added BETWEEN '%s' AND '%s';",
                 Date.valueOf(startDate), Date.valueOf(endDate));
         return this.getAddressBookDataUsingDB(query);
     }
-
     public Map<String, Double> getCountOfContactsByCity() {
-        String query = "SELECT city,COUNT(city) as count from addressbook group by city;";
+        String query = "SELECT city,COUNT(city) as count from addressBook group by city;";
         Map<String, Double> countOfContacts = new HashMap<>();
         try (Connection connection = this.getConnection()) {
             statement = connection.createStatement();
@@ -127,7 +125,7 @@ public class AddressBookDBService {
         return countOfContacts;
     }
     public Map<String, Double> getCountOfContactsByState() {
-        String query = "SELECT state,COUNT(state) as count from addressbook group by state;";
+        String query = "SELECT state,COUNT(state) as count from addressBook group by state;";
         Map<String, Double> countOfContacts = new HashMap<>();
         try (Connection connection = this.getConnection()) {
             statement = connection.createStatement();
@@ -141,5 +139,38 @@ public class AddressBookDBService {
             e.printStackTrace();
         }
         return countOfContacts;
+    }
+    public AddressBookData addNewContact(String type, String firstName, String lastName, String phoneNumber,
+                                         String email, String city, String state, String zip, LocalDate localDate) {
+        Connection connection = null;
+        AddressBookData addressBookData=null;
+        try {
+            connection = this.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try (Statement statement = connection.createStatement()) {
+            String sql = String.format("INSERT INTO addressBook (`type`,`firstName`,`lastName`,`phoneNumber`,`email`,`city`,`state`,`zip`,`date_added`) " +
+                            " VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+                    type,firstName,lastName,phoneNumber,email,city,state,zip,Date.valueOf(localDate));
+            System.out.println(sql+" sql");
+            int rowAffected = statement.executeUpdate(sql);
+            if (rowAffected == 1) {
+                addressBookData = new AddressBookData(type,firstName,lastName,phoneNumber,email,city,state,zip,localDate);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return addressBookData;
     }
 }

@@ -8,9 +8,9 @@ import java.util.Enumeration;
 public class DatabaseConnection {
     public static void main(String[] args) {
 
-        String jdbcURL = "jdbc:mysql://localhost:3306/address_book_service?useSSL=false";
+        String jdbcURL = "jdbc:mysql://localhost:3307/addressbook?useSSL=false";
         String userName = "root";
-        String password = "Kingofgoogle5";
+        String password = "root";
         Connection connection;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -27,7 +27,6 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
-
     private static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
         while (driverList.hasMoreElements()) {
@@ -35,4 +34,5 @@ public class DatabaseConnection {
             System.out.println(driverClass.getClass().getName());
         }
     }
+
 }

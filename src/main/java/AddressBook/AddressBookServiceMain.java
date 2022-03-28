@@ -6,7 +6,9 @@ import java.util.Map;
 
 public class AddressBookServiceMain {
     private List<AddressBookData> addressBookList;
+
     public enum IOService {DB_IO}
+
     private static AddressBookDBService addressBookDBService;
 
     public AddressBookServiceMain() {
@@ -19,7 +21,6 @@ public class AddressBookServiceMain {
         }
         return addressBookList;
     }
-
     public void updateRecord(String name, String phoneNumber) throws AddressBookException {
         int result = addressBookDBService.updateAddressBookRecord(name, phoneNumber);
         if (result==0)return;
@@ -37,17 +38,14 @@ public class AddressBookServiceMain {
     public boolean checkRecordSyncWithDB(String name) {
         List<AddressBookData> addressBookData= addressBookDBService.getAddressBookData(name);
         System.out.println(addressBookData);
-        boolean equals = addressBookData.get(0).equals(getAddressBookData(name));
-        return equals;
+        return addressBookData.get(0).equals(getAddressBookData(name));
     }
-
     public List<AddressBookData> readEmployeePayrollForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
         if (ioService.equals(IOService.DB_IO)) {
             return addressBookDBService.getEmployeePayrollForDateRange(startDate, endDate);
         }
         return null;
     }
-
     public Map<String, Double> contactsByCity(IOService ioService) {
         if (ioService.equals(IOService.DB_IO)) {
             return addressBookDBService.getCountOfContactsByCity();
@@ -60,4 +58,11 @@ public class AddressBookServiceMain {
         }
         return null;
     }
+    public void addNewContact(String firstName, String lastName, String typeid,String phoneNumber, String city, String state,
+                              String zip, String email, LocalDate localDate) {
+        addressBookList.add(addressBookDBService.addNewContact(typeid, firstName, lastName,
+                phoneNumber,email,city,state,zip,localDate));
+    }
+
+
 }
