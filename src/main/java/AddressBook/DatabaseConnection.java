@@ -5,9 +5,8 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 
-public class DBConnection {
+public class DatabaseConnection {
     public static void main(String[] args) {
-
 
         String jdbcURL = "jdbc:mysql://localhost:3307/addressbook?useSSL=false";
         String userName = "root";
@@ -28,6 +27,7 @@ public class DBConnection {
             e.printStackTrace();
         }
     }
+
     private static void listDrivers() {
         Enumeration<Driver> driverList = DriverManager.getDrivers();
         while (driverList.hasMoreElements()) {

@@ -1,19 +1,20 @@
 package AddressBook;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddressBookDBService
-{
+public class AddressBookDBService {
     public Connection connection = null;
     Statement statement = null;
     ResultSet resultSet = null;
     private PreparedStatement addressBookDataStatement;
     private static AddressBookDBService addressBookDBService;
-    public AddressBookDBService()
-    {
+
+    public AddressBookDBService() {
     }
+
     public static AddressBookDBService getInstance() {
         if (addressBookDBService == null) {
             addressBookDBService = new AddressBookDBService();
@@ -31,7 +32,7 @@ public class AddressBookDBService
     }
 
     public List<AddressBookData> readDate() {
-        String query = "SELECT * from addressBook";
+        String query = "SELECT * from addressbook";
         return this.getAddressBookDataUsingDB(query);
     }
 
@@ -66,10 +67,11 @@ public class AddressBookDBService
         }
         return addressBookList;
     }
+
     private void prepareStatementForAddressBook() {
         try {
             Connection connection = this.getConnection();
-            String sql = "SELECT * FROM addressBook WHERE `firstName` = ?";
+            String sql = "SELECT * FROM addressbook WHERE `firstName` = ?";
             addressBookDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,18 +88,23 @@ public class AddressBookDBService
             addressBookDataList =this.getAddressBookData(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
         return addressBookDataList;
     }
 
     public int updateAddressBookRecord(String name, String phoneNumber) throws AddressBookException {
-        String query = String.format("update addressBook set phoneNumber = '%s' where firstName= '%s' ;", phoneNumber, name);
+        String query = String.format("update addressbook set phonenumber = '%s' where firstName= '%s' ;", phoneNumber, name);
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(query);
         }catch (SQLException e) {
             throw new AddressBookException(e.getMessage(), AddressBookException.ExceptionType.DatabaseException);
         }
+    }
+
+    public List<AddressBookData> getEmployeePayrollForDateRange(LocalDate startDate, LocalDate endDate) {
+        String query = String.format("SELECT * FROM addressbook WHERE date_added BETWEEN '%s' AND '%s';",
+                Date.valueOf(startDate), Date.valueOf(endDate));
+        return this.getAddressBookDataUsingDB(query);
     }
 }

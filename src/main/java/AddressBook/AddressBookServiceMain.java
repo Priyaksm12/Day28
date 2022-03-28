@@ -1,12 +1,12 @@
 package AddressBook;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AddressBookServiceMain {
     private List<AddressBookData> addressBookList;
 
     public enum IOService {DB_IO}
-
     private static AddressBookDBService addressBookDBService;
 
     public AddressBookServiceMain() {
@@ -19,6 +19,7 @@ public class AddressBookServiceMain {
         }
         return addressBookList;
     }
+
     public void updateRecord(String name, String phoneNumber) throws AddressBookException {
         int result = addressBookDBService.updateAddressBookRecord(name, phoneNumber);
         if (result==0)return;
@@ -36,8 +37,14 @@ public class AddressBookServiceMain {
     public boolean checkRecordSyncWithDB(String name) {
         List<AddressBookData> addressBookData= addressBookDBService.getAddressBookData(name);
         System.out.println(addressBookData);
-
         return addressBookData.get(0).equals(getAddressBookData(name));
+    }
+
+    public List<AddressBookData> readEmployeePayrollForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
+        if (ioService.equals(IOService.DB_IO)) {
+            return addressBookDBService.getEmployeePayrollForDateRange(startDate, endDate);
+        }
+        return null;
     }
 
 }
