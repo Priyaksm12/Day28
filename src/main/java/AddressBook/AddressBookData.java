@@ -1,4 +1,5 @@
 package AddressBook;
+
 import java.util.Objects;
 
 public class AddressBookData {
@@ -40,7 +41,6 @@ public class AddressBookData {
     }
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (!(o instanceof AddressBookData)) return false;
         AddressBookData that = (AddressBookData) o;
@@ -53,4 +53,5 @@ public class AddressBookData {
                 Objects.equals(state, that.state) &&
                 Objects.equals(zip, that.zip);
     }
+
 }
